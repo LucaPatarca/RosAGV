@@ -6,7 +6,6 @@
 #define SENSOR_TIMEOUT 250000 // 0.5 sec
 #define TRIG 4
 #define ECHO 5
-#define SMOOTH_FACTOR 2
 
 RangeSensor::RangeSensor()
         : smoothDistance_(0)
@@ -66,5 +65,5 @@ float RangeSensor::getDistance()
 
 float RangeSensor::smoothe(const float input, const float data)
         {
-                return (data == 0) ? input : ((data * (SMOOTH_FACTOR - 1) + input) / SMOOTH_FACTOR);
+                return (data == 0) ? input : ((data * 0.2) + (input * 0.8));
         }

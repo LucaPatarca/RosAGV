@@ -1,15 +1,19 @@
-import launch
+from launch import LaunchDescription
 import launch.actions
 import launch.substitutions
-import launch_ros.actions
+from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    return launch.LaunchDescription([
-        launch_ros.actions.Node(
+    return LaunchDescription([
+        Node(
             package='agv', executable='range', output='screen'),
-        launch_ros.actions.Node(
+        Node(
             package='agv', executable='movement', output='screen'),
-        launch_ros.actions.Node(
+        Node(
+            package='agv', executable='clamp', output='screen'),
+        Node(
             package='agv', executable='controller', output='screen'),
+        Node(
+            package='agv', executable='camera', output='screen'),
     ])

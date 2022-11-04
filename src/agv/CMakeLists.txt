@@ -17,50 +17,78 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(cv_bridge REQUIRED)
+find_package(image_transport REQUIRED)
+find_package(OpenCV REQUIRED COMPONENTS highgui imgcodecs imgproc videoio)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(WiringPi REQUIRED)
+find_package(Threads REQUIRED)
+
+include_directories(include ${WIRINGPI_INCLUDE_DIRS})
 
 #range node
 add_executable(range src/nodes/range.cpp src/controller/range_sensor.cpp)
-target_include_directories(range PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
-
-ament_target_dependencies(range rclcpp sensor_msgs)
-
-install(TARGETS range
-  DESTINATION lib/${PROJECT_NAME})
+ament_target_dependencies(range 
+  rclcpp
+  sensor_msgs
+)
 
 #movement node
 add_executable(movement src/nodes/movement.cpp src/controller/motor_controller.cpp)
-target_include_directories(movement PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
-
-ament_target_dependencies(movement rclcpp sensor_msgs)
-
-install(TARGETS movement
-  DESTINATION lib/${PROJECT_NAME})
+ament_target_dependencies(movement 
+  rclcpp
+  sensor_msgs
+)
 
 #controller node
 add_executable(controller src/nodes/controller.cpp)
-target_include_directories(controller PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
+ament_target_dependencies(controller 
+  rclcpp 
+  sensor_msgs
+)
 
-ament_target_dependencies(controller rclcpp sensor_msgs)
+#clamp node
+add_executable(clamp src/nodes/clamp.cpp src/controller/clamp_controller.cpp)
+ament_target_dependencies(clamp 
+  rclcpp 
+  sensor_msgs
+)
 
-install(TARGETS controller
+#camera node
+add_executable(camera src/nodes/camera.cpp)
+ament_target_dependencies(camera
+  image_transport
+  rclcpp
+  sensor_msgs
+  std_msgs
+)
+target_link_libraries( camera
+  cv_bridge
+  opencv_highgui
+  opencv_videoio
+)
+
+#install executables
+install(
+  TARGETS clamp controller movement range camera
   DESTINATION lib/${PROJECT_NAME})
 
+# Install include directories
+install(
+  DIRECTORY include/
+  DESTINATION include/${PROJECT_NAME}
+)
+
 # Install launch files.
-install(DIRECTORY
-  launch
+install(
+  DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}/
 )
+
+ament_export_include_directories(include)
+ament_export_dependencies(cv_bridge image_transport pluginlib rosidl_default_runtime rclcpp sensor_msgs std_msgs)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -76,10 +104,6 @@ endif()
 ament_package()
 
 # add wiringPi
-find_package(WiringPi REQUIRED)
-find_package(Threads REQUIRED)
-include_directories(${WIRINGPI_INCLUDE_DIRS})
-target_link_libraries(range ${WIRINGPI_LIBRARIES}) 
-target_link_libraries(range ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries(movement ${WIRINGPI_LIBRARIES}) 
-target_link_libraries(movement ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(range ${WIRINGPI_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(movement ${WIRINGPI_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(clamp ${WIRINGPI_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
