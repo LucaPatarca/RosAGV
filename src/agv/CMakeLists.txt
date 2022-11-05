@@ -17,12 +17,8 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(cv_bridge REQUIRED)
-find_package(image_transport REQUIRED)
-find_package(OpenCV REQUIRED COMPONENTS highgui imgcodecs imgproc videoio)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
-find_package(std_msgs REQUIRED)
 find_package(WiringPi REQUIRED)
 find_package(Threads REQUIRED)
 
@@ -56,23 +52,9 @@ ament_target_dependencies(clamp
   sensor_msgs
 )
 
-#camera node
-add_executable(camera src/nodes/camera.cpp)
-ament_target_dependencies(camera
-  image_transport
-  rclcpp
-  sensor_msgs
-  std_msgs
-)
-target_link_libraries( camera
-  cv_bridge
-  opencv_highgui
-  opencv_videoio
-)
-
 #install executables
 install(
-  TARGETS clamp controller movement range camera
+  TARGETS clamp controller movement range
   DESTINATION lib/${PROJECT_NAME})
 
 # Install include directories
@@ -86,9 +68,6 @@ install(
   DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}/
 )
-
-ament_export_include_directories(include)
-ament_export_dependencies(cv_bridge image_transport pluginlib rosidl_default_runtime rclcpp sensor_msgs std_msgs)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
