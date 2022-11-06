@@ -15,5 +15,5 @@ def generate_launch_description():
         Node(
             package='agv', executable='controller', output='screen'),
         Node(
-            package='agv', executable='camera', output='screen'),
+            package='raspicam2', executable='raspicam2_node', output='screen'),
     ])
