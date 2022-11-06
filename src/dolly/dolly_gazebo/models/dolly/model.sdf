@@ -3,7 +3,7 @@
   <model name='Dolly'>
     <pose>0 0 0.225 0 -0 0</pose>
 
-    <link name='chassis'>
+    <link name='base_link'>
       <inertial>
         <mass>1.0</mass>
         <inertia>
@@ -71,11 +71,12 @@
         <update_rate>5</update_rate>
         <plugin name="ultrasonic_range_sensor" filename="libgazebo_ros_ray_sensor.so">
           <ros>
-            <namespace>/dolly</namespace>
-            <remapping>~/out:=range_sensor</remapping>
+            <namespace>/</namespace>
+            <remapping>~/out:=scan</remapping>
           </ros>
-          <output_type>sensor_msgs/Range</output_type>
+          <output_type>sensor_msgs/LaserScan</output_type>
           <radiation_type>ultrasound</radiation_type>
+          <frame_name>odom</frame_name>
         </plugin>
       </sensor>
     </link>
@@ -246,39 +247,8 @@
       </collision>
     </link>
 
-    <link name='tail'>
-      <pose>-0.52 0 0 -1.6 0 0</pose>
-      <inertial>
-        <mass>0.0254232</mass>
-        <inertia>
-          <ixx>1.528e-05</ixx>
-          <ixy>0</ixy>
-          <ixz>0</ixz>
-          <iyy>1.528e-05</iyy>
-          <iyz>0</iyz>
-          <izz>3.45e-06</izz>
-        </inertia>
-        <pose frame=''>0 0 -0.04 0 -0 0</pose>
-      </inertial>
-      <visual name='visual'>
-        <geometry>
-          <cylinder>
-            <radius>0.016468</radius>
-            <length>0.08</length>
-          </cylinder>
-        </geometry>
-        <material>
-          <script>
-            <uri>model://dolly/materials/scripts</uri>
-            <uri>model://dolly/materials/textures</uri>
-            <name>Dolly/fur</name>
-          </script>
-        </material>
-      </visual>
-    </link>
-
     <joint name='left_wheel_joint' type='revolute'>
-      <parent>chassis</parent>
+      <parent>base_link</parent>
       <child>left_wheel</child>
       <axis>
         <xyz>0 0 1</xyz>
@@ -290,7 +260,7 @@
     </joint>
 
     <joint name='right_wheel_joint' type='revolute'>
-      <parent>chassis</parent>
+      <parent>base_link</parent>
       <child>right_wheel</child>
       <axis>
         <xyz>0 0 1</xyz>
@@ -302,48 +272,14 @@
     </joint>
 
     <joint name='caster_wheel' type='ball'>
-      <parent>chassis</parent>
+      <parent>base_link</parent>
       <child>caster</child>
-    </joint>
-
-    <joint name='tail_joint' type='revolute'>
-      <parent>chassis</parent>
-      <child>tail</child>
-      <pose>0 0 0.04 0 -0 0</pose>
-      <axis>
-        <xyz>1 0 0</xyz>
-        <use_parent_model_frame>0</use_parent_model_frame>
-        <limit>
-          <lower>-1.79769e+308</lower>
-          <upper>1.79769e+308</upper>
-          <effort>-1</effort>
-          <velocity>-1</velocity>
-        </limit>
-        <dynamics>
-          <spring_reference>0</spring_reference>
-          <spring_stiffness>0</spring_stiffness>
-          <damping>0</damping>
-          <friction>0</friction>
-        </dynamics>
-      </axis>
-      <physics>
-        <ode>
-          <limit>
-            <cfm>0</cfm>
-            <erp>0.2</erp>
-          </limit>
-          <suspension>
-            <cfm>0</cfm>
-            <erp>0.2</erp>
-          </suspension>
-        </ode>
-      </physics>
     </joint>
 
     <plugin name='diff_drive' filename='libgazebo_ros_diff_drive.so'>
 
       <ros>
-        <namespace>/dolly</namespace>
+        <namespace>/</namespace>
       </ros>
 
       <!-- wheels -->
@@ -362,8 +298,8 @@
       <publish_odom>true</publish_odom>
       <publish_odom_tf>true</publish_odom_tf>
 
-      <odometry_frame>odom_demo</odometry_frame>
-      <robot_base_frame>chassis</robot_base_frame>
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_link</robot_base_frame>
 
     </plugin>
 

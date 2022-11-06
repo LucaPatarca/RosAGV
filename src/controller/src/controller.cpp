@@ -6,14 +6,14 @@
 
 using std::placeholders::_1;
 
-class MinimalSubscriber : public rclcpp::Node
+class Controller : public rclcpp::Node
 {
   public:
-    MinimalSubscriber()
-    : Node("minimal_subscriber")
+    Controller()
+    : Node("controller")
     {
       subscription_ = this->create_subscription<sensor_msgs::msg::Range>(
-      "/dolly/range_sensor", 10, std::bind(&MinimalSubscriber::range_callback, this, _1));
+      "/dolly/range_sensor", 10, std::bind(&Controller::range_callback, this, _1));
       publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("/dolly/cmd_vel", 10);
     }
 
@@ -35,7 +35,7 @@ class MinimalSubscriber : public rclcpp::Node
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<MinimalSubscriber>());
+  rclcpp::spin(std::make_shared<Controller>());
   rclcpp::shutdown();
   return 0;
 }

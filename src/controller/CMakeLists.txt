@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(agv_sim)
+project(controller)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -37,10 +37,5 @@ ament_target_dependencies(controller rclcpp sensor_msgs)
 install(TARGETS
   controller
   DESTINATION lib/${PROJECT_NAME})
-
-install(DIRECTORY
-  launch
-  DESTINATION share/${PROJECT_NAME}/
-)
 
 ament_package()

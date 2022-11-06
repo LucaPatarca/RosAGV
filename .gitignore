@@ -4,4 +4,4 @@ install/
 log/
 src/dolly/COLCON_IGNORE
 src/agv/COLCON_IGNORE
-src/agv_sim/COLCON_IGNORE
+src/controller/COLCON_IGNORE
