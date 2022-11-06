@@ -2,6 +2,4 @@
 build/
 install/
 log/
-src/dolly/COLCON_IGNORE
-src/agv/COLCON_IGNORE
-src/controller/COLCON_IGNORE
+src/*/COLCON_IGNORE

@@ -38,13 +38,6 @@ ament_target_dependencies(movement
   sensor_msgs
 )
 
-#controller node
-add_executable(controller src/nodes/controller.cpp)
-ament_target_dependencies(controller 
-  rclcpp 
-  sensor_msgs
-)
-
 #clamp node
 add_executable(clamp src/nodes/clamp.cpp src/controller/clamp_controller.cpp)
 ament_target_dependencies(clamp 
@@ -54,7 +47,7 @@ ament_target_dependencies(clamp
 
 #install executables
 install(
-  TARGETS clamp controller movement range
+  TARGETS clamp movement range
   DESTINATION lib/${PROJECT_NAME})
 
 # Install include directories
