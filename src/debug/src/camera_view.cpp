@@ -57,6 +57,7 @@ class ImageListener : public rclcpp::Node
     {
       subscription_ = this->create_subscription<sensor_msgs::msg::CompressedImage>(
       "/camera/image/compressed", 10, std::bind(&ImageListener::callback, this, _1));
+      cv::namedWindow("Camera View", cv::WindowFlags::WINDOW_KEEPRATIO);
     }
 
   private:
@@ -68,7 +69,7 @@ class ImageListener : public rclcpp::Node
         if(image.data == NULL){
           RCLCPP_ERROR(logger_, "Could not decode image.");
         }
-        cv::imshow("view", image);
+        cv::imshow("Camera View", image);
         cv::waitKey(10);
     }
 
