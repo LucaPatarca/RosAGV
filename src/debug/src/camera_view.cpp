@@ -59,8 +59,10 @@ class ImageListener : public rclcpp::Node
         auto image = cv::imdecode(data, cv::COLOR_BGR2RGB);
         if(image.data == NULL){
           RCLCPP_ERROR(logger_, "Could not decode image.");
+          return;
         }
-        for(vision_msgs::msg::Detection2D detection : lastDetection_->detections)
+        vision_msgs::msg::Detection2DArray detections = lastDetection_ ? *lastDetection_ : vision_msgs::msg::Detection2DArray();
+        for(vision_msgs::msg::Detection2D detection : detections.detections)
         {
           cv::rectangle(image, bboxToRect(detection.bbox), 0xFF0000, 2);
           if(detection.results.size() > 0)
