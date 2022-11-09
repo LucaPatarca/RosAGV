@@ -21,12 +21,16 @@ find_package(cv_bridge REQUIRED)
 find_package(image_transport REQUIRED)
 find_package(OpenCV REQUIRED COMPONENTS highgui)
 find_package(rclcpp REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(vision_msgs REQUIRED)
 
 add_executable(camera_view src/camera_view.cpp)
 ament_target_dependencies(camera_view
   rclcpp
   image_transport
   cv_bridge
+  vision_msgs
 )
 target_link_libraries(camera_view
   opencv_highgui
