@@ -5,7 +5,7 @@
 class ClampNode : public rclcpp::Node{
 public:
   ClampNode()
-  : Node("movement"){
+  : Node("clamp"){
     subscription_ = this->create_subscription<geometry_msgs::msg::Vector3>(
       "/clamp", 10, std::bind(&ClampNode::clamp_callback, this, std::placeholders::_1));
   }

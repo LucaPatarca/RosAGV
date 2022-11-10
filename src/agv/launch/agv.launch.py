@@ -13,6 +13,8 @@ def generate_launch_description():
         Node(
             package='agv', executable='clamp', output='screen'),
         Node(
+            package='agv', executable='led', output='screen'),
+        Node(
             package='controller', executable='controller', output='screen'),
         Node(
             package='raspicam2', executable='raspicam2_node', output='screen',

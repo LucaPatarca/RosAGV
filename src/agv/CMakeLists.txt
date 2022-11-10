@@ -45,9 +45,16 @@ ament_target_dependencies(clamp
   sensor_msgs
 )
 
+#led node
+add_executable(led src/nodes/led.cpp)
+ament_target_dependencies(led 
+  rclcpp 
+  std_msgs
+)
+
 #install executables
 install(
-  TARGETS clamp movement range
+  TARGETS clamp movement range led
   DESTINATION lib/${PROJECT_NAME})
 
 # Install include directories
@@ -79,3 +86,4 @@ ament_package()
 target_link_libraries(range ${WIRINGPI_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(movement ${WIRINGPI_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(clamp ${WIRINGPI_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(led ${WIRINGPI_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
