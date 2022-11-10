@@ -15,7 +15,8 @@ def generate_launch_description():
         Node(
             package='controller', executable='controller', output='screen'),
         Node(
-            package='raspicam2', executable='raspicam2_node', output='screen'),
+            package='raspicam2', executable='raspicam2_node', output='screen',
+            parameters=[{'fps':20}]),
         Node(
             package='object_detection', executable='object_detection', output='screen'),
         Node(
