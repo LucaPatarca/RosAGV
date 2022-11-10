@@ -1,3 +1,6 @@
 [submodule "src/raspicam2_node"]
 	path = src/raspicam2_node
 	url = https://github.com/christianrauch/raspicam2_node.git
+[submodule "src/gps/vendor/nema_tode"]
+	path = src/gps/vendor/nema_tode
+	url = https://github.com/LucaPatarca/NemaTode.git

@@ -38,7 +38,7 @@ class ImageRecognitionNode(Node):
         self.subscription  # prevent unused variable warning
         self.publisher = self.create_publisher(
             Detection2DArray,
-            '/agv/detections',
+            '/object/detection',
             1
         )
         # load network classes
