@@ -18,4 +18,6 @@ def generate_launch_description():
             package='raspicam2', executable='raspicam2_node', output='screen'),
         Node(
             package='object_detection', executable='object_detection', output='screen'),
+        Node(
+            package='gps', executable='gps', output='screen'),
     ])
