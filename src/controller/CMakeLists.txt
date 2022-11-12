@@ -19,6 +19,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(vision_msgs REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -32,7 +33,7 @@ if(BUILD_TESTING)
 endif()
 
 add_executable(controller src/controller.cpp)
-ament_target_dependencies(controller rclcpp sensor_msgs)
+ament_target_dependencies(controller rclcpp sensor_msgs vision_msgs)
 
 install(TARGETS
   controller

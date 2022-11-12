@@ -17,51 +17,6 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(sensor_msgs REQUIRED)
-find_package(WiringPi REQUIRED)
-find_package(Threads REQUIRED)
-
-include_directories(include ${WIRINGPI_INCLUDE_DIRS})
-
-#range node
-add_executable(range src/nodes/range.cpp src/controller/range_sensor.cpp)
-ament_target_dependencies(range 
-  rclcpp
-  sensor_msgs
-)
-
-#movement node
-add_executable(movement src/nodes/movement.cpp src/controller/motor_controller.cpp)
-ament_target_dependencies(movement 
-  rclcpp
-  sensor_msgs
-)
-
-#clamp node
-add_executable(clamp src/nodes/clamp.cpp src/controller/clamp_controller.cpp)
-ament_target_dependencies(clamp 
-  rclcpp 
-  sensor_msgs
-)
-
-#led node
-add_executable(led src/nodes/led.cpp)
-ament_target_dependencies(led 
-  rclcpp 
-  std_msgs
-)
-
-#install executables
-install(
-  TARGETS clamp movement range led
-  DESTINATION lib/${PROJECT_NAME})
-
-# Install include directories
-install(
-  DIRECTORY include/
-  DESTINATION include/${PROJECT_NAME}
-)
 
 # Install launch files.
 install(
@@ -81,9 +36,3 @@ if(BUILD_TESTING)
 endif()
 
 ament_package()
-
-# add wiringPi
-target_link_libraries(range ${WIRINGPI_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries(movement ${WIRINGPI_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries(clamp ${WIRINGPI_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries(led ${WIRINGPI_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
