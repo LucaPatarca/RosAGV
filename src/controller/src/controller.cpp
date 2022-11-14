@@ -9,6 +9,8 @@
 #include "vision_msgs/msg/detection2_d_array.hpp"
 #include "std_msgs/msg/bool.hpp"
 
+#define ROS_SLEEP(millis) rclcpp::sleep_for(std::chrono::nanoseconds(millis*1000000))
+
 using std::placeholders::_1;
 
 class Controller : public rclcpp::Node
@@ -32,6 +34,28 @@ class Controller : public rclcpp::Node
     }
 
   private:
+    void set_led(bool value)
+    {
+      std_msgs::msg::Bool ledMsg;
+      ledMsg.data = value;
+      ledPub_->publish(ledMsg);
+    }
+
+    void request_object_detection()
+    {
+      std_msgs::msg::Bool objReq;
+      objReq.data = true;
+      objectPub_->publish(objReq);
+      waitForObject_ = true;
+    }
+
+    void set_clamp(double value)
+    {
+      geometry_msgs::msg::Vector3 clampMessage;
+      clampMessage.z = value;
+      clampPub_->publish(clampMessage);
+    }
+
     void object_callback(const vision_msgs::msg::Detection2DArray::SharedPtr msg)
     {
       lastObjectDetection_ = std::chrono::steady_clock::now();
@@ -43,13 +67,17 @@ class Controller : public rclcpp::Node
         }
       }
       if(foundBall){
-        geometry_msgs::msg::Vector3 clampMessage;
-        clampPub_->publish(clampMessage);
+        set_clamp(0);
       }
-      std_msgs::msg::Bool ledMsg;
-      ledMsg.data = false;
-      ledPub_->publish(ledMsg);
-      rclcpp::sleep_for(std::chrono::nanoseconds(2000000000));
+      set_led(false);
+      ROS_SLEEP(500);
+      set_led(true);
+      ROS_SLEEP(500);
+      set_led(false);
+      ROS_SLEEP(500);
+      set_led(true);
+      ROS_SLEEP(500);
+      set_led(false);
       waitForObject_ = false;
     }
 
@@ -65,19 +93,9 @@ class Controller : public rclcpp::Node
         velMessage.linear.x = 0.35;
       } else if (msg->range < 23 && lastObjectSeconds > 5){
         velMessage.linear.x = 0;
-        geometry_msgs::msg::Vector3 clampMessage;
-        clampMessage.z = 1.0;
-        clampPub_->publish(clampMessage);
-
-        std_msgs::msg::Bool objReq;
-        objReq.data = true;
-        objectPub_->publish(objReq);
-        RCLCPP_INFO(this->get_logger(), "sent request");
-        
-        std_msgs::msg::Bool ledMsg;
-        ledMsg.data = true;
-        ledPub_->publish(ledMsg);
-        waitForObject_ = true;
+        set_clamp(1.0);
+        request_object_detection();
+        set_led(true);        
       } else {
         velMessage.linear.x = -0.35;
         if(lastChangeMillis > 5000){
