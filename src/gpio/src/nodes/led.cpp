@@ -13,8 +13,13 @@ public:
       exit(EXIT_FAILURE);
     }
     pinMode(LED_PIN, OUTPUT);
+    digitalWrite(LED_PIN, LOW);
     subscription_ = this->create_subscription<std_msgs::msg::Bool>(
       "/led", 10, std::bind(&LedNode::led_callback, this, std::placeholders::_1));
+  }
+
+  ~LedNode(){
+    digitalWrite(LED_PIN, LOW);
   }
 
 private:

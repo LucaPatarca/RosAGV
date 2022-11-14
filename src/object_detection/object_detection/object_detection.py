@@ -6,6 +6,7 @@ import numpy as np
 import ament_index_python
 import os.path
 from vision_msgs.msg import Detection2DArray, Detection2D, ObjectHypothesisWithPose
+from std_msgs.msg import Bool
 import requests
 
 SCALE = 0.00392
@@ -30,12 +31,19 @@ class ImageRecognitionNode(Node):
 
     def __init__(self):
         super().__init__('object_detection')
-        self.subscription = self.create_subscription(
+        self.image_sub = self.create_subscription(
             CompressedImage,
             '/camera/image/compressed',
             self.image_callback,
             1)
-        self.subscription  # prevent unused variable warning
+        self.image_sub  # prevent unused variable warning
+        self.request_sub = self.create_subscription(
+            Bool,
+            '/object/request',
+            self.object_callback,
+            1
+        )
+        self.request_sub # prevent unused variable warning
         self.publisher = self.create_publisher(
             Detection2DArray,
             '/object/detection',
@@ -110,12 +118,19 @@ class ImageRecognitionNode(Node):
 
     def image_callback(self, msg: CompressedImage):
         image = np.asarray(bytearray(msg.data), dtype="uint8")
-        image = cv2.imdecode(image, cv2.IMREAD_COLOR)
-        blob = cv2.dnn.blobFromImage(image, SCALE, (416,416), (0,0,0), True, crop=False)
-        self.net.setInput(blob)
-        outs = self.net.forward(get_output_layers(self.net))
-        detections = self.get_detections(outs, image)
-        self.publisher.publish(detections)
+        self.image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+    
+    def object_callback(self, msg: Bool):
+        self.get_logger().info('received call')
+        if msg.data:
+            self.get_logger().info('looking for objects...')
+            image = self.image
+            blob = cv2.dnn.blobFromImage(image, SCALE, (416,416), (0,0,0), True, crop=False)
+            self.net.setInput(blob)
+            outs = self.net.forward(get_output_layers(self.net))
+            detections = self.get_detections(outs, image)
+            self.publisher.publish(detections)
+            self.get_logger().info('done.')
 
 
 def main(args=None):

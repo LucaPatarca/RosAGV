@@ -25,7 +25,7 @@ def generate_launch_description():
             package='controller', executable='controller', output='screen', condition=IfCondition(controller_config)),
         Node(
             package='raspicam2', executable='raspicam2_node', output='screen',
-            parameters=[{'fps':20}]),
+            parameters=[{'fps':10}]),
         Node(
             package='object_detection', executable='object_detection', output='screen', condition=IfCondition(object_detection_config)),
         Node(
