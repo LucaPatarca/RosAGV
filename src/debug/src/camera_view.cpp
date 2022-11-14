@@ -47,7 +47,7 @@ class ImageListener : public rclcpp::Node
       imageSubscription_ = this->create_subscription<sensor_msgs::msg::CompressedImage>(
       "/camera/image/compressed", 10, std::bind(&ImageListener::imageCallback, this, _1));
       detectionSubscription_ = this->create_subscription<vision_msgs::msg::Detection2DArray>(
-        "/agv/detections", 10, std::bind(&ImageListener::detectionCallback, this, _1));
+        "/object/detection", 10, std::bind(&ImageListener::detectionCallback, this, _1));
       cv::namedWindow("Camera View", cv::WindowFlags::WINDOW_KEEPRATIO);
     }
 
