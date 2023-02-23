@@ -48,7 +48,6 @@ class Controller : public rclcpp::Node
       std_msgs::msg::Bool objReq;
       objReq.data = true;
       objectPub_->publish(objReq);
-      waitForObject_ = true;
     }
 
     void set_clamp(double value)
@@ -60,27 +59,27 @@ class Controller : public rclcpp::Node
 
     void object_callback(const vision_msgs::msg::Detection2DArray::SharedPtr msg)
     {
-      set_led(false);
-      ROS_SLEEP(500);
-      set_led(true);
-      ROS_SLEEP(500);
-      set_led(false);
-      ROS_SLEEP(500);
-      set_led(true);
-      ROS_SLEEP(500);
-      set_led(false);
       lastObjectDetection_ = std::chrono::steady_clock::now();
-      bool foundBall = false;
       for (vision_msgs::msg::Detection2D detection : msg->detections){
         RCLCPP_INFO(this->get_logger(), "detection: '%s'", detection.results[0].id.c_str());
         if(detection.results[0].id == "sports ball"){
-          foundBall = true;
+          waitForObject_ = true;
+          set_clamp(1);
+          set_led(false);
+          ROS_SLEEP(500);
+          set_led(true);
+          ROS_SLEEP(500);
+          set_led(false);
+          ROS_SLEEP(500);
+          set_led(true);
+          ROS_SLEEP(500);
+          set_led(false);
+          ROS_SLEEP(500);
+          set_clamp(0);
+          ROS_SLEEP(1000);
+          waitForObject_ = false;
         }
       }
-      if(foundBall){
-        set_clamp(0);
-      }
-      ROS_SLEEP(1000);
       waitForObject_ = false;
     }
 
@@ -94,11 +93,11 @@ class Controller : public rclcpp::Node
 
       if(msg->range > 40){
         velMessage.linear.x = speed_;
-      } else if (msg->range < 23 && lastObjectSeconds > 5){
-        velMessage.linear.x = 0;
-        set_clamp(1.0);
-        request_object_detection();
-        set_led(true);        
+      // } else if (msg->range < 23 && lastObjectSeconds > 5){
+      //   velMessage.linear.x = 0;
+      //   set_clamp(1.0);
+      //   request_object_detection();
+      //   set_led(true);        
       } else {
         velMessage.linear.x = 0-speed_;
         if(lastChangeMillis > 5000){
