@@ -60,6 +60,15 @@ class Controller : public rclcpp::Node
 
     void object_callback(const vision_msgs::msg::Detection2DArray::SharedPtr msg)
     {
+      set_led(false);
+      ROS_SLEEP(500);
+      set_led(true);
+      ROS_SLEEP(500);
+      set_led(false);
+      ROS_SLEEP(500);
+      set_led(true);
+      ROS_SLEEP(500);
+      set_led(false);
       lastObjectDetection_ = std::chrono::steady_clock::now();
       bool foundBall = false;
       for (vision_msgs::msg::Detection2D detection : msg->detections){
@@ -71,15 +80,7 @@ class Controller : public rclcpp::Node
       if(foundBall){
         set_clamp(0);
       }
-      set_led(false);
-      ROS_SLEEP(500);
-      set_led(true);
-      ROS_SLEEP(500);
-      set_led(false);
-      ROS_SLEEP(500);
-      set_led(true);
-      ROS_SLEEP(500);
-      set_led(false);
+      ROS_SLEEP(1000);
       waitForObject_ = false;
     }
 
