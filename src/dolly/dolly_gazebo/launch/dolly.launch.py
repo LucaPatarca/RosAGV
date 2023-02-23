@@ -11,16 +11,8 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
 
-    pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
     pkg_dolly_gazebo = get_package_share_directory('dolly_gazebo')
-    pkg_navigation_ros = get_package_share_directory('nav2_bringup')
     pkg_slam_ros = get_package_share_directory('slam_toolbox')
-
-    navigation = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(pkg_navigation_ros, 'launch', 'navigation_launch.py')
-        )
-    )
 
     slam = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -69,9 +61,8 @@ def generate_launch_description():
                               description='Open RViz.'),
         DeclareLaunchArgument(name='model', default_value=[os.path.join(pkg_dolly_gazebo, 'models', 'dolly', 'model_no_macro.urdf'), ''],
                                             description='Absolute path to robot urdf file'),
-        navigation,
         slam,
-        ExecuteProcess(cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_init.so', '-s', 'libgazebo_ros_factory.so', os.path.join(pkg_dolly_gazebo, 'worlds', 'dolly_city.world')], output='screen'),
+        ExecuteProcess(cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_init.so', '-s', 'libgazebo_ros_factory.so', os.path.join(pkg_dolly_gazebo, 'worlds', 'warehouse.world')], output='screen'),
         joint_state_publisher_node,
         robot_state_publisher_node,
         spawn_entity,
