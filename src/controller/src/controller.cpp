@@ -19,6 +19,8 @@ class Controller : public rclcpp::Node
     Controller()
     : Node("controller")
     {
+      this->declare_parameter("speed",0.35);
+      speed_ = this->get_parameter("speed").get_parameter_value().get<double>();
       srand(time(NULL));
       rangeSub_ = this->create_subscription<sensor_msgs::msg::Range>(
         "/range", 10, std::bind(&Controller::range_callback, this, _1));
@@ -90,14 +92,14 @@ class Controller : public rclcpp::Node
       auto lastObjectSeconds = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - lastObjectDetection_).count();
 
       if(msg->range > 40){
-        velMessage.linear.x = 0.35;
+        velMessage.linear.x = speed_;
       } else if (msg->range < 23 && lastObjectSeconds > 5){
         velMessage.linear.x = 0;
         set_clamp(1.0);
         request_object_detection();
         set_led(true);        
       } else {
-        velMessage.linear.x = -0.35;
+        velMessage.linear.x = 0-speed_;
         if(lastChangeMillis > 5000){
           int dir = rand();
           if(dir > RAND_MAX / 2)
@@ -121,6 +123,7 @@ class Controller : public rclcpp::Node
     double lastDir_;
     bool waitForObject_;
     std::chrono::steady_clock::time_point lastObjectDetection_;
+    double speed_;
 };
 
 int main(int argc, char * argv[])

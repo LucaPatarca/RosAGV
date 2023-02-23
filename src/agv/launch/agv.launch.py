@@ -9,6 +9,7 @@ def generate_launch_description():
     controller_config = LaunchConfiguration('controller')
     object_detection_config = LaunchConfiguration('object_detection')
     gps = LaunchConfiguration('gps')
+    speed = LaunchConfiguration('speed')
     return LaunchDescription([
         DeclareLaunchArgument('controller', default_value='True'),
         DeclareLaunchArgument('object_detection', default_value='True'),
@@ -22,7 +23,8 @@ def generate_launch_description():
         Node(
             package='gpio', executable='led', output='screen'),
         Node(
-            package='controller', executable='controller', output='screen', condition=IfCondition(controller_config)),
+            package='controller', executable='controller', output='screen', 
+            condition=IfCondition(controller_config), parameters=[{'speed':speed}]),
         Node(
             package='raspicam2', executable='raspicam2_node', output='screen',
             parameters=[{'fps':10}]),
